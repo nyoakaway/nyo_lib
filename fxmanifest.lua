@@ -15,6 +15,7 @@ shared_scripts {
     'lib/**/shared/**/*.lua',    
     'config/**/*.lua',     
     'scripts/**/config.lua',
+    'modules/**/shared.lua'
 }
 
 server_scripts { 
@@ -32,7 +33,8 @@ client_scripts {
     'lib/**/client.lua',
     'lib/**/client/**/*.lua',
     'scripts/**/client.lua',
-    'scripts/**/client/**/*.lua'
+    'scripts/**/client/**/*.lua',
+    'modules/**/client.lua'
 }
 
 

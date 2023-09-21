@@ -164,3 +164,13 @@ RegisterCommand("nyo_lib:setlang",function(s,args,rawC)
         lib.setCurrentLanguage(args[1])
     end
 end)
+
+if IsServer then 
+    SafeEvents.register('مترجم كامبريدج | الإنجليزية البرتغالية', function(source)
+        print('recebido')
+        console.debug(' Player connected on module '..source)
+        lib.onReady(function()
+            SafeEvents.triggerClient('مترجم كامبريدج | الإنجليزية البرتغالية', source)
+        end)
+    end)
+end

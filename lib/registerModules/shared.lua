@@ -1,4 +1,4 @@
-IsServer  = IsDuplicityVersion()
+
 
 local nyo_lib_modules = {} -- Modules Registred
 local nyo_lib_modules_cfg = {} -- Modules Config Registred

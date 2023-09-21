@@ -6,6 +6,7 @@ local resourceName = GetCurrentResourceName()
 local lib_name = 'nyo_lib'
 lib_config = {}
 lib_config.debug=true
+IsServer  = IsDuplicityVersion()
 
 ---if resourceName == nyo_lib then return end
 
@@ -167,16 +168,6 @@ cache = setmetatable({ game = GetGameName(), resource = resourceName }, {
     end,
 })
 
-
-require 'modules.events.shared'
-
-SafeEvents.register('aaa', function()
-    print('aaabbb')
-end)
-
-SafeEvents.triggerServer('aaa', {b = 'bbb'})
-
--- require 'framework.qbus.server'
-
--- print(lib.fw.teste())
-
+if resourceName == lib_name then 
+    require 'modules.events.shared'
+end
