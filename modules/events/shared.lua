@@ -1,8 +1,9 @@
+lib.events = {}
 
 --- ================================================================================================ ---
 --- [ Tunnel Events ] ============================================================================== ---
 --- ================================================================================================ ---
-/*
+
 SafeEvents = {}
 RPC        = {}
 
@@ -81,10 +82,12 @@ else
     safe_events.triggerServer = function(name, ...)
         local params = {...}
         CreateThread(function()
-            while PlayerPedId() == 0 do
-                Wait(100)
-            end
-            
+            -- while PlayerPedId() == 0 do
+            --     Wait(100)
+            -- end
+            print(name)
+            print(params)
+            print(json.encode(params))
             console.debug('^3[ SAFE EVENTS ] ^7 Triggering server event '..name)
             TriggerServerEvent('nyo_lib:safe_events', { name = name }, table.unpack(params))
         end)
@@ -98,18 +101,18 @@ safe_events.register = function(name, handler)
     end
     local id = #safe_handlers[name] + 1
     safe_handlers[name][id] = handler
-    local module = lib.getModuleByTraceback()
+    local module = cache.resource--lib.getModuleByTraceback()
     if module ~= "@nfw" then
         if not registered_stop_events[module] then
             console.debug('^3[ SAFE EVENTS ] ^7 Registering event '..name)
             registered_stop_events[module] = {}
             registered_stop_events[module][#registered_stop_events[module] + 1] = {name = name, id = id}
-            lib.onModuleStop(module, function()
-                for k,v in pairs(registered_stop_events[module]) do
-                    SafeEvents.remove(v.name, v.id)
-                end
-                registered_stop_events[module] = nil
-            end)
+            -- lib.onModuleStop(module, function()
+            --     for k,v in pairs(registered_stop_events[module]) do
+            --         SafeEvents.remove(v.name, v.id)
+            --     end
+            --     registered_stop_events[module] = nil
+            -- end)
         else
             registered_stop_events[module][#registered_stop_events[module] + 1] = {name = name, id = id}
         end
@@ -142,17 +145,17 @@ setmetatable(SafeEvents, {
 
 rpc.addHandler = function(name, func)
     if not rpc_handlers[name] then
-        local module = lib.getModuleByTraceback()
+        local module = cache.resource--lib.getModuleByTraceback()
         if module ~= "@nfw" then
             if not registered_stop_rpc[module] then
                 registered_stop_rpc[module] = {}
                 registered_stop_rpc[module][#registered_stop_rpc[module] + 1] = name
-                lib.onModuleStop(module, function()
-                    for k,v in pairs(registered_stop_rpc[module]) do
-                        RPC.removeHandler(v)
-                    end
-                    registered_stop_rpc[module] = nil
-                end)
+                -- lib.onModuleStop(module, function()
+                --     for k,v in pairs(registered_stop_rpc[module]) do
+                --         RPC.removeHandler(v)
+                --     end
+                --     registered_stop_rpc[module] = nil
+                -- end)
             else
                 registered_stop_rpc[module][#registered_stop_rpc[module] + 1] = name
             end
@@ -290,12 +293,14 @@ setmetatable(RPC, {
 })
 
 
-if IsServer then 
-    SafeEvents.register('مترجم كامبريدج | الإنجليزية البرتغالية', function(source)
-        print('recebido')
-        console.debug(' Player connected on module '..source)
-        lib.onReady(function()
-            SafeEvents.triggerClient('مترجم كامبريدج | الإنجليزية البرتغالية', source)
-        end)
-    end)
-end*/
+-- if IsServer then 
+--     SafeEvents.register('مترجم كامبريدج | الإنجليزية البرتغالية', function(source)
+--         print('recebido')
+--         console.debug(' Player connected on module '..source)
+--         lib.onReady(function()
+--             SafeEvents.triggerClient('مترجم كامبريدج | الإنجليزية البرتغالية', source)
+--         end)
+--     end)
+-- end
+
+return SafeEvents, RPC

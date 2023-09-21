@@ -168,6 +168,13 @@ cache = setmetatable({ game = GetGameName(), resource = resourceName }, {
 })
 
 
+require 'modules.events.shared'
+
+SafeEvents.register('aaa', function()
+    print('aaabbb')
+end)
+
+SafeEvents.triggerServer('aaa', {b = 'bbb'})
 
 -- require 'framework.qbus.server'
 
