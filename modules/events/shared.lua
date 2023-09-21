@@ -16,33 +16,27 @@ local rpc_requests  = {}
 local registered_stop_events = {}
 local registered_stop_rpc = {}
 
-if IsServer then
 
+if IsServer then
     RegisterNetEvent('nyo_lib:safe_events', function(info, ...)
-        -- console.table({info, params})
         local params = {...}
         local source = source
-        --local player = Player(source).state
         local name = info.name
-        -- local _token = source..GetPlayerName(source)..NetworkGetNetworkIdFromEntity(GetPlayerPed(source))
-        -- local safe_token = Token.stringEncrypt(_token, 'nfw')
+        
         console.debug('^3[ SAFE EVENTS ] ^7 Received event '..name.. ' from '..source)
         if lib_config.debugSpecial then
             console.table({info, params}, 1)
         end
-        --if safe_token == token  then
-            if safe_handlers[name] then
-                for k,v in pairs(safe_handlers[name]) do
-                    CreateThread(function()
-                        if v then
-                            v(source, table.unpack(params))
-                        end
-                    end)
-                end
+
+        if safe_handlers[name] then
+            for k,v in pairs(safe_handlers[name]) do
+                CreateThread(function()
+                    if v then
+                        v(source, table.unpack(params))
+                    end
+                end)
             end
-        --else
-        --    console.debug('^3[ SAFE EVENTS ] ^7 Invalid token. Event: '..name.. ' | Source: '..source)
-        --end
+        end
     end)
 
     safe_events.triggerClient = function(name, src, ...)
@@ -64,19 +58,15 @@ else
         if lib_config.debugSpecial then
             console.table({info, params}, 1)
         end
-        --if token == LocalPlayer.state['ريزيتس حار حقًا ونيو به وحدة رائعة passa nem wifi aqui viu !'] then
-            if safe_handlers[name] then
-                for k,v in pairs(safe_handlers[name]) do
-                    CreateThread(function()
-                        if v then
-                            v(table.unpack(params))
-                        end
-                    end)
-                end
+        if safe_handlers[name] then
+            for k,v in pairs(safe_handlers[name]) do
+                CreateThread(function()
+                    if v then
+                        v(table.unpack(params))
+                    end
+                end)
             end
-        --else        
-        --    console.debug('^3[ SAFE EVENTS ] ^7 Invalid token. Event: '..name)
-        --end
+        end
     end)
 
     safe_events.triggerServer = function(name, ...)
@@ -85,9 +75,6 @@ else
             -- while PlayerPedId() == 0 do
             --     Wait(100)
             -- end
-            print(name)
-            print(params)
-            print(json.encode(params))
             console.debug('^3[ SAFE EVENTS ] ^7 Triggering server event '..name)
             TriggerServerEvent('nyo_lib:safe_events', { name = name }, table.unpack(params))
         end)
@@ -101,21 +88,13 @@ safe_events.register = function(name, handler)
     end
     local id = #safe_handlers[name] + 1
     safe_handlers[name][id] = handler
-    local module = cache.resource--lib.getModuleByTraceback()
-    if module ~= "@nfw" then
-        if not registered_stop_events[module] then
-            console.debug('^3[ SAFE EVENTS ] ^7 Registering event '..name)
-            registered_stop_events[module] = {}
-            registered_stop_events[module][#registered_stop_events[module] + 1] = {name = name, id = id}
-            -- lib.onModuleStop(module, function()
-            --     for k,v in pairs(registered_stop_events[module]) do
-            --         SafeEvents.remove(v.name, v.id)
-            --     end
-            --     registered_stop_events[module] = nil
-            -- end)
-        else
-            registered_stop_events[module][#registered_stop_events[module] + 1] = {name = name, id = id}
-        end
+    local module = cache.resource
+    if not registered_stop_events[module] then
+        console.debug('^3[ SAFE EVENTS ] ^7 Registering event '..name)
+        registered_stop_events[module] = {}
+        registered_stop_events[module][#registered_stop_events[module] + 1] = {name = name, id = id}
+    else
+        registered_stop_events[module][#registered_stop_events[module] + 1] = {name = name, id = id}
     end
     return id
 end
@@ -145,17 +124,11 @@ setmetatable(SafeEvents, {
 
 rpc.addHandler = function(name, func)
     if not rpc_handlers[name] then
-        local module = cache.resource--lib.getModuleByTraceback()
+        local module = cache.resource
         if module ~= "@nfw" then
             if not registered_stop_rpc[module] then
                 registered_stop_rpc[module] = {}
                 registered_stop_rpc[module][#registered_stop_rpc[module] + 1] = name
-                -- lib.onModuleStop(module, function()
-                --     for k,v in pairs(registered_stop_rpc[module]) do
-                --         RPC.removeHandler(v)
-                --     end
-                --     registered_stop_rpc[module] = nil
-                -- end)
             else
                 registered_stop_rpc[module][#registered_stop_rpc[module] + 1] = name
             end
@@ -291,16 +264,5 @@ setmetatable(RPC, {
     __metatable = 'SAI DAQUI, TA DOIDAO?'
 
 })
-
-
--- if IsServer then 
---     SafeEvents.register('مترجم كامبريدج | الإنجليزية البرتغالية', function(source)
---         print('recebido')
---         console.debug(' Player connected on module '..source)
---         lib.onReady(function()
---             SafeEvents.triggerClient('مترجم كامبريدج | الإنجليزية البرتغالية', source)
---         end)
---     end)
--- end
 
 return SafeEvents, RPC
