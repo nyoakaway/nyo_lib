@@ -1,4 +1,4 @@
-function lib.getClosestEntity(type, coords, range, targets)
+lib.getClosestEntity = function(type, coords, range, targets)
     local playerPed = PlayerPedId()
     local closestEntity = nil 
     local closestDistance = nil
