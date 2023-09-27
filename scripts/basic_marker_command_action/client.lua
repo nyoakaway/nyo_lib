@@ -1,0 +1,11 @@
+lib.registerModule({}, false, function()
+    lib.registerKeyPress(function(v,k)
+        print("click marker")
+        print(json.encode(nyo_lib_configs[v.config]))
+    end)
+
+    lib.registerCommand(function(v)
+        print("command execute")
+        print(json.encode(nyo_lib_configs[v.config])) 
+    end)
+end)

@@ -3,8 +3,6 @@ lib_config.updateCloseCoordinatesTime = 3000
 lib_config.sleepMarkerTime = 3000
 
 lib_config.scripts = {
-    ['ade_skin'] = true,
-    ['ade_spawn'] = true,
-    ['ade_commands'] = true,
-    ['ade_bennys'] = true
+    ['basic_marker_command_action'] = true,
+    ['basic_use'] = true
 }
